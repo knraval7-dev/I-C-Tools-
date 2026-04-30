@@ -697,10 +697,12 @@
       function toggleOther(selId, wrapperId) {
         const sel = document.getElementById(selId);
         const wrap = document.getElementById(wrapperId);
+        const textInput = document.getElementById(selId + "-text");
+        if (!sel || !wrap || !textInput) return; // Safety check
         const isOther = sel.value === "Other";
         wrap.style.display = isOther ? "block" : "none";
-        if (isOther) document.getElementById(selId + "-text").focus();
-        else document.getElementById(selId + "-text").value = "";
+        if (isOther) textInput.focus();
+        else textInput.value = "";
       }
 
       // Show/hide "Other" text box for Equipment Type inside a block
@@ -957,9 +959,6 @@
         const btn = document.querySelector(".submit-btn");
         btn.textContent = "Sending…";
         btn.disabled = true;
-
-        const APPS_SCRIPT_URL =
-          "https://script.google.com/macros/s/AKfycbxKLcZmPO3ffLQLBszyNAljk6AgnA3zlU9wfstKGCnhJ6X52AJoTTX5ycQuzP6ltT6C/exec";
 
         const sendData = async () => {
           try {
