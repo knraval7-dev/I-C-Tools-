@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>I&C Tools & Machines — Site Wise Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c26;
+  --surface2: #1e2331;
+  --border: #2a3045;
+  --border2: #3a4560;
+  --accent: #2563eb;
+  --accent-light: #3b82f6;
+  --accent-glow: rgba(37,99,235,0.15);
+  --ok: #16a34a;
+  --ok-bg: rgba(22,163,74,0.12);
+  --warn: #d97706;
+  --warn-bg: rgba(217,119,6,0.12);
+  --danger: #dc2626;
+  --danger-bg: rgba(220,38,38,0.12);
+  --purple: #7c3aed;
+  --purple-bg: rgba(124,58,237,0.12);
+  --text: #e8eaf0;
+  --text2: #8892a4;
+  --text3: #4a5568;
+  --mono: 'DM Mono', monospace;
+  --sans: 'Sora', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; }
+
+.header {
+  background: linear-gradient(135deg, #1e3a6e 0%, #1a2744 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 16px 14px;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.logo-mark { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 500; color: #fff; flex-shrink: 0; letter-spacing: -0.5px; }
+.header-title { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.3; }
+.header-sub { font-size: 11px; color: #93a8d4; padding-left: 44px; }
+
+.container { max-width: 640px; margin: 0 auto; padding: 18px 14px 0; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.card-header { padding: 11px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.card-header-num { width: 22px; height: 22px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.card-header-title { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: 0.05em; text-transform: uppercase; }
+.card-body { padding: 14px 16px; }
+
+.field { margin-bottom: 13px; }
+.field:last-child { margin-bottom: 0; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 5px; }
+label .req { color: var(--danger); margin-left: 2px; }
+
+input[type=text], input[type=number], input[type=date], select, textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text); font-family: var(--sans);
+  font-size: 14px; padding: 10px 12px; outline: none;
+  transition: border-color .2s, box-shadow .2s; -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent-light); box-shadow: 0 0 0 3px var(--accent-glow); }
+input::placeholder, textarea::placeholder { color: var(--text3); font-size: 13px; }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238892a4' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+select option { background: #1e2331; color: var(--text); }
+textarea { resize: vertical; min-height: 52px; font-size: 13px; }
+input[type=date]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* Equipment block */
+.eq-block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; animation: fadeIn .22s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+.eq-block-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.eq-num { font-family: var(--mono); font-size: 11px; color: var(--accent-light); background: var(--accent-glow); padding: 3px 9px; border-radius: 4px; font-weight: 500; }
+.eq-remove { background: none; border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: var(--sans); transition: all .15s; }
+.eq-remove:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Status buttons */
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.status-btn { padding: 9px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 12px; font-family: var(--sans); font-weight: 500; cursor: pointer; text-align: center; transition: all .15s; line-height: 1.3; }
+.status-btn:hover { border-color: var(--border2); color: var(--text); }
+.s-working   { background: var(--ok-bg);      border-color: var(--ok);      color: var(--ok); }
+.s-notwork   { background: var(--warn-bg);     border-color: var(--warn);    color: var(--warn); }
+.s-missing   { background: var(--danger-bg);   border-color: var(--danger);  color: var(--danger); }
+.s-scraped   { background: rgba(74,85,104,.2); border-color: #4a5568;        color: #8892a4; }
+
+/* Counter bar */
+.counter-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; }
+.counter-count { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent-light); }
+.counter-label { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.counter-status-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.cstat { font-size: 12px; font-family: var(--mono); }
+.cok { color: var(--ok); } .cwarn { color: var(--warn); } .cdanger { color: var(--danger); } .cgray { color: var(--text3); }
+
+/* Add button */
+.add-btn { width: 100%; padding: 12px; background: transparent; border: 1px dashed var(--border2); border-radius: var(--radius); color: var(--accent-light); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; margin-bottom: 12px; }
+.add-btn:hover { background: var(--accent-glow); border-color: var(--accent); }
+
+/* Submit */
+.submit-btn { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: var(--sans); font-size: 16px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.submit-btn:hover { background: var(--accent-light); }
+.submit-btn:active { transform: scale(0.98); }
+
+/* Error */
+.err-bar { background: var(--danger-bg); border: 1px solid var(--danger); border-radius: var(--radius-sm); color: #fca5a5; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; display: none; }
+
+/* Success */
+.success-screen { display: none; text-align: center; padding: 40px 20px; }
+.success-icon { width: 64px; height: 64px; background: var(--ok-bg); border: 2px solid var(--ok); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
+.success-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--ok); }
+.success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
+.success-summary { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; text-align: left; }
+.ss-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.ss-row:last-child { border-bottom: none; }
+.ss-key { color: var(--text2); font-size: 12px; flex-shrink: 0; }
+.ss-val { font-family: var(--mono); font-size: 12px; color: var(--text); text-align: right; }
+.eq-summary-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 6px; text-align: left; }
+.eq-si-id { font-family: var(--mono); font-size: 12px; color: var(--accent-light); }
+.eq-si-detail { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.new-btn { padding: 12px 28px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); color: var(--text); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; }
+.new-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+
+.info-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-glow); border: 1px solid rgba(37,99,235,0.3); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--accent-light); margin-bottom: 14px; }
+.sect-note { font-size: 12px; color: var(--text3); margin-top: 8px; line-height: 1.5; }
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-mark">I&C</div>
+    <div class="header-title">Installation and Commissioning:<br>Tools &amp; Machines</div>
+  </div>
+  <div class="header-sub">Site Wise — Monthly Status Report</div>
+</div>
+
+<div class="container" id="main-form">
+
+  <div style="margin: 6px 0 14px">
+    <div class="info-pill">
+      <svg width="12" height="12" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Fill your details once — add all equipment below
+    </div>
+  </div>
+
+  <!-- ── SECTION 1: SUBMITTER ── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-num">1</div>
+      <div class="card-header-title">Your Details</div>
+    </div>
+    <div class="card-body">
+
+      <div class="field">
+        <label>1. Date of Observation <span class="req">*</span></label>
+        <input type="date" id="f-date">
+      </div>
+
+      <div class="field-row field">
+        <div>
+          <label>2. Employee ID <span class="req">*</span></label>
+          <input type="number" id="f-empid" placeholder="e.g. 1045">
+        </div>
+        <div>
+          <label>3. Employee Name <span class="req">*</span></label>
+          <input type="text" id="f-empname" placeholder="Full name">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>4. Site Name <span class="req">*</span></label>
+        <select id="f-site" onchange="toggleOther('f-site','f-site-other')">
+          <option value="">— select your site —</option>
+          <option>Indutch Composite Technology Pvt Ltd, Waghodiya</option>
+          <option>Adani New Industries Ltd., Mundra</option>
+          <option>AMC-Senvion, Trichy</option>
+          <option>Envision Wind Power Technologies India Pvt Ltd, Trichy</option>
+          <option>Envision Wind Power Technologies India Pvt Ltd, Mappeddu</option>
+          <option>Indutch, Sullurpeta</option>
+          <option>L&T, Coimbatore</option>
+          <option>L&T, Dabaspete</option>
+          <option>GE Vernova, Halol</option>
+          <option>Suzlon Energy Limited, Anantapur</option>
+          <option>Suzlon Energy Limited, Jaisalmer</option>
+          <option>Suzlon Energy Limited, Ratlam</option>
+          <option>Suzlon Energy Limited, Bhuj</option>
+          <option>Vestas, Chennai</option>
+          <option>JSW Renew Energy Fifteen Limited, Halol</option>
+          <option>Vayona Energy Private Limited, Nellore</option>
+          <option>Other</option>
+        </select>
+        <div id="f-site-other" style="display:none;margin-top:8px">
+          <input type="text" id="f-site-other-text" placeholder="Please specify site name...">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: EQUIPMENT ── -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-num">2</div>
+      <div class="card-header-title">Equipment at This Site</div>
+    </div>
+    <div class="card-body">
+
+      <div class="counter-bar">
+        <div>
+          <div class="counter-count" id="eq-count">0</div>
+          <div class="counter-label">equipment added</div>
+        </div>
+        <div class="counter-status-row">
+          <span class="cstat cok"   id="c-ok">0 Working</span>
+          <span class="cstat cwarn" id="c-nw">0 Not Working</span>
+          <span class="cstat cdanger" id="c-miss">0 Missing</span>
+          <span class="cstat cgray" id="c-scrp">0 Scraped</span>
+        </div>
+      </div>
+
+      <div id="eq-list"></div>
+
+      <button class="add-btn" onclick="addEquipment()">
+        <span style="font-size:18px;line-height:1">+</span>
+        Add Equipment Item
+      </button>
+
+      <p class="sect-note">Each item = one row in the report. Add as many as are present at your site.</p>
+    </div>
+  </div>
+
+  <div class="err-bar" id="err-bar"></div>
+  <button class="submit-btn" onclick="submitAll()">Submit Report</button>
+  <p style="text-align:center;margin-top:10px;font-size:12px;color:var(--text3)">All equipment submitted in one report</p>
+
+</div>
+
+<!-- ── SUCCESS ── -->
+<div class="container success-screen" id="success-screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Report Submitted</div>
+  <div class="success-sub">Your equipment status report has been recorded successfully.</div>
+  <div class="success-summary" id="success-summary"></div>
+  <button class="new-btn" onclick="resetForm()">Submit Another Report</button>
+</div>
+
+<script>
+// Show/hide "Other" text box for Site Name
+function toggleOther(selId, wrapperId) {
+  const sel = document.getElementById(selId);
+  const wrap = document.getElementById(wrapperId);
+  const isOther = sel.value === 'Other';
+  wrap.style.display = isOther ? 'block' : 'none';
+  if (isOther) document.getElementById(selId + '-text').focus();
+  else document.getElementById(selId + '-text').value = '';
+}
+
+// Show/hide "Other" text box for Equipment Type inside a block
+function toggleEqOther(sel) {
+  const block = sel.closest('.eq-block');
+  const wrap = block.querySelector('.eq-type-other');
+  const input = block.querySelector('.eq-type-other-text');
+  const isOther = sel.value === 'Other';
+  wrap.style.display = isOther ? 'block' : 'none';
+  if (isOther) input.focus();
+  else input.value = '';
+}
+
+// Resolve final value — if "Other" selected, use the typed text
+function resolveOther(selectVal, otherText) {
+  return selectVal === 'Other' ? (otherText.trim() || 'Other') : selectVal;
+}
+
+let eqCounter = 0;
+// ─── PASTE YOUR GOOGLE APPS SCRIPT URL BELOW ───────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzapyUJRj_yBBx_OfSgLG5kptgo_CtUEcwLITHukgQHhQ1kOTsnWXjBstIWW2Dr0m8w/exec';
+// ────────────────────────────────────────────────────────────────────────────
+
+let submissions = [];
+try { submissions = JSON.parse(localStorage.getItem('ic_sub_v2') || '[]'); } catch(e) {}
+
+// Set today's date
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+const EQ_TYPES = [
+  'Sanding Machine',
+  'Angle Grinder',
+  'Battery Drill Machine',
+  'Anchoring/Drilling Machine',
+  'Straight Grinder Machine',
+  'Buffing Machine',
+  'Routing Machine',
+  'Impact Wrench',
+  'Hot Air Gun',
+  'Ring Spanner',
+  'Fix Spanner',
+  'Allen Key',
+  'Socket',
+  'Clamp Meter',
+  'Line Tester',
+  'Plier',
+  'Wire Stripper',
+  'Screwdriver',
+  'Crimping Tool',
+  'Other',
+];
+
+const STATUS_OPTIONS = [
+  { val: 'Working',       label: 'Working',        cls: 's-working' },
+  { val: 'Not working',   label: 'Not Working',    cls: 's-notwork' },
+  { val: 'Theft/Missing', label: 'Theft / Missing',cls: 's-missing' },
+  { val: 'Scraped',       label: 'Scraped',        cls: 's-scraped' },
+];
+
+function addEquipment() {
+  eqCounter++;
+  const id = `eq-${eqCounter}`;
+  const div = document.createElement('div');
+  div.className = 'eq-block';
+  div.id = id;
+
+  const typeOptions = EQ_TYPES.map(t => `<option value="${t}">${t}</option>`).join('');
+  const statusBtns  = STATUS_OPTIONS.map(s =>
+    `<button type="button" class="status-btn" data-val="${s.val}" data-cls="${s.cls}"
+      onclick="selectStatus('${id}', this)">${s.label}</button>`
+  ).join('');
+
+  div.innerHTML = `
+    <div class="eq-block-header">
+      <span class="eq-num">ITEM #${eqCounter}</span>
+      <button class="eq-remove" onclick="removeEq('${id}')">Remove</button>
+    </div>
+
+    <div class="field">
+      <label>5. Equipment Type <span class="req">*</span></label>
+      <select class="eq-type" onchange="toggleEqOther(this)">
+        <option value="">— select type —</option>
+        ${typeOptions}
+      </select>
+      <div class="eq-type-other" style="display:none;margin-top:8px">
+        <input type="text" class="eq-type-other-text" placeholder="Please specify equipment type...">
+      </div>
+    </div>
+
+    <div class="field-row field">
+      <div>
+        <label>6. ID No. / Specification <span class="req">*</span></label>
+        <input type="text" class="eq-id" placeholder="e.g. ICT-AG-87" style="text-transform:uppercase">
+      </div>
+      <div>
+        <label>7. Make (Brand)</label>
+        <input type="text" class="eq-make" placeholder="e.g. Bosch, Makita">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>8. Status of the Equipment <span class="req">*</span></label>
+      <div class="status-grid">${statusBtns}</div>
+      <input type="hidden" class="eq-status" value="">
+    </div>
+
+    <div class="field">
+      <label>9. Remarks / Notes <span style="text-transform:none;font-size:10px;color:var(--text3)">(optional)</span></label>
+      <textarea class="eq-remarks" placeholder="Any observations, repair notes, location details..."></textarea>
+    </div>
+  `;
+
+  document.getElementById('eq-list').appendChild(div);
+  updateCounter();
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function removeEq(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(-5px)';
+  el.style.transition = 'all .2s';
+  setTimeout(() => { el.remove(); updateCounter(); }, 200);
+}
+
+function selectStatus(blockId, btn) {
+  const block = document.getElementById(blockId);
+  block.querySelectorAll('.status-btn').forEach(b => b.className = 'status-btn');
+  btn.classList.add(btn.dataset.cls);
+  block.querySelector('.eq-status').value = btn.dataset.val;
+  updateCounter();
+}
+
+function updateCounter() {
+  const blocks = document.querySelectorAll('.eq-block');
+  document.getElementById('eq-count').textContent = blocks.length;
+  let ok = 0, nw = 0, miss = 0, scrp = 0;
+  blocks.forEach(b => {
+    const s = b.querySelector('.eq-status').value;
+    if (s === 'Working')       ok++;
+    else if (s === 'Not working') nw++;
+    else if (s === 'Theft/Missing') miss++;
+    else if (s === 'Scraped')  scrp++;
+  });
+  document.getElementById('c-ok').textContent   = ok   + ' Working';
+  document.getElementById('c-nw').textContent   = nw   + ' Not Working';
+  document.getElementById('c-miss').textContent = miss + ' Missing';
+  document.getElementById('c-scrp').textContent = scrp + ' Scraped';
+}
+
+function showErr(msg) {
+  const bar = document.getElementById('err-bar');
+  bar.textContent = '⚠ ' + msg;
+  bar.style.display = 'block';
+  bar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(() => bar.style.display = 'none', 5000);
+}
+
+function submitAll() {
+  const date    = document.getElementById('f-date').value;
+  const empid   = document.getElementById('f-empid').value.trim();
+  const empname = document.getElementById('f-empname').value.trim();
+
+  const siteRaw  = document.getElementById('f-site').value;
+  const siteOther= document.getElementById('f-site-other-text').value.trim();
+  const site     = resolveOther(siteRaw, siteOther);
+
+  if (!date)    return showErr('Please enter Date of Observation.');
+  if (!empid)   return showErr('Please enter your Employee ID.');
+  if (!empname) return showErr('Please enter your Employee Name.');
+  if (!siteRaw) return showErr('Please select your Site Name.');
+  if (siteRaw === 'Other' && !siteOther) return showErr('You selected "Other" for Site — please specify the site name.');
+
+  const blocks = document.querySelectorAll('.eq-block');
+  if (!blocks.length) return showErr('Please add at least one equipment item.');
+
+  const items = [];
+  let valid = true;
+  blocks.forEach((b, i) => {
+    const typeRaw   = b.querySelector('.eq-type').value;
+    const typeOther = b.querySelector('.eq-type-other-text').value.trim();
+    const type      = resolveOther(typeRaw, typeOther);
+    const eqid      = b.querySelector('.eq-id').value.trim().toUpperCase();
+    const make      = b.querySelector('.eq-make').value.trim();
+    const status    = b.querySelector('.eq-status').value;
+    const remarks   = b.querySelector('.eq-remarks').value.trim();
+
+    if (!typeRaw) { showErr(`Item #${i+1}: Please select Equipment Type.`); valid = false; return; }
+    if (typeRaw === 'Other' && !typeOther) { showErr(`Item #${i+1}: You selected "Other" for type — please specify.`); valid = false; return; }
+    if (!eqid)    { showErr(`Item #${i+1} (${type}): Please enter ID/Specification.`); valid = false; return; }
+    if (!status)  { showErr(`Item #${i+1} (${eqid}): Please select Status.`); valid = false; return; }
+
+    items.push({ type, eqid, make, status, remarks });
+  });
+  if (!valid) return;
+
+  const record = {
+    id: Date.now(),
+    date, empid, empname, site,
+    items,
+    submitted: new Date().toLocaleString('en-IN')
+  };
+
+  submissions.unshift(record);
+  try { localStorage.setItem('ic_sub_v2', JSON.stringify(submissions)); } catch(e) {}
+
+  // Show sending state
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  // POST to Google Sheets via Apps Script
+  const sendData = async () => {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzapyUJRj_yBBx_OfSgLG5kptgo_CtUEcwLITHukgQHhQ1kOTsnWXjBstIWW2Dr0m8w/exec') {
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record)
+        });
+      } catch(e) { console.warn('Sheet POST failed:', e); }
+    }
+    showSuccessScreen(record, items, site);
+    btn.textContent = 'Submit Report';
+    btn.disabled = false;
+  };
+  sendData();
+}
+
+function resetForm() {
+  eqCounter = 0;
+  document.getElementById('eq-list').innerHTML = '';
+  ['f-date','f-empid','f-empname','f-site'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('f-site-other').style.display = 'none';
+  document.getElementById('f-site-other-text').value = '';
+  updateCounter();
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('main-form').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showSuccessScreen(record, items, site) {
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+
+  const ok   = items.filter(i => i.status === 'Working').length;
+  const nw   = items.filter(i => i.status === 'Not working').length;
+  const miss = items.filter(i => i.status === 'Theft/Missing').length;
+  const scrp = items.filter(i => i.status === 'Scraped').length;
+
+  const eqRows = items.map(i =>
+    `<div class="eq-summary-item">
+      <div class="eq-si-id">${i.eqid} — ${i.type}${i.make ? ' ('+i.make+')' : ''}</div>
+      <div class="eq-si-detail">Status: ${i.status}${i.remarks ? ' · ' + i.remarks : ''}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('success-summary').innerHTML = `
+    <div class="ss-row"><span class="ss-key">Site</span><span class="ss-val">${site}</span></div>
+    <div class="ss-row"><span class="ss-key">Submitted by</span><span class="ss-val">${record.empname} (ID: ${record.empid})</span></div>
+    <div class="ss-row"><span class="ss-key">Date observed</span><span class="ss-val">${record.date}</span></div>
+    <div class="ss-row"><span class="ss-key">Total equipment</span><span class="ss-val">${items.length} items</span></div>
+    <div class="ss-row"><span class="ss-key">Working</span><span class="ss-val" style="color:var(--ok)">${ok}</span></div>
+    <div class="ss-row"><span class="ss-key">Not Working</span><span class="ss-val" style="color:var(--warn)">${nw}</span></div>
+    <div class="ss-row"><span class="ss-key">Theft / Missing</span><span class="ss-val" style="color:var(--danger)">${miss}</span></div>
+    <div class="ss-row"><span class="ss-key">Scraped</span><span class="ss-val" style="color:var(--text3)">${scrp}</span></div>
+    <div style="margin-top:12px;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Equipment Details</div>
+    ${eqRows}
+  `;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.dispatchEvent(new CustomEvent('ic-submission', { detail: record }));
+}
+
+// Start with one row
+addEquipment();
+</script>
+</body>
+</html>
